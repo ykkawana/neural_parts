@@ -132,7 +132,7 @@ def normal_consistency_loss(predictions, targets, config):
         create_graph=True
     )[0][:, :, :3]
     predicted_normals_norm = torch.sqrt(
-        torch.square(predicted_normals).sum(-1, keepdim=True)
+        (predicted_normals ** 2).sum(-1, keepdim=True)
     )
     predicted_normals = predicted_normals / predicted_normals_norm
 

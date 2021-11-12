@@ -144,7 +144,6 @@ class DatasetCollection(BaseDataset):
                 for xi in x
                 for xij in flatten(xi)
             ]
-
         return flatten([d[idx] for d in self._datasets])
 
     @property

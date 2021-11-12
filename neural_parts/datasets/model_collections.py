@@ -249,7 +249,6 @@ class BaseModel(object):
         p = n_negative * labels + n_positive * (1-labels)
         p /= p.sum()
         idxs = np.random.choice(len(points), N, p=p.ravel())
-
         return (
             points[idxs],
             labels[idxs],
@@ -333,6 +332,7 @@ class BaseModel(object):
 
         surface_sampler = self._sample_points_on_surface
 
+        # breakpoint()
         return stack_points(
             samplers[equal, positive_weight > 0, biased](N),
             surface_sampler(Ns)

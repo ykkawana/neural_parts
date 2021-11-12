@@ -129,7 +129,7 @@ class SimpleNVP(nn.Module):
             return torch.eye(3)[None, None, None], 0
 
         q = self.rotations(F)
-        q = q / torch.sqrt(torch.square(q).sum(-1, keepdim=True))
+        q = q / torch.sqrt((q ** 2).sum(-1, keepdim=True))
         R = quaternions_to_rotation_matrices(q[:, None])
         t = self.translations(F)[:, None]
 

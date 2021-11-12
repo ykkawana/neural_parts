@@ -1,6 +1,7 @@
 """Stats logger provides a method for logging training stats."""
 
 import sys
+import wandb
 
 
 class AverageAggregator(object):
@@ -10,12 +11,14 @@ class AverageAggregator(object):
 
     @property
     def value(self):
-        return self._value / self._count
+        return self._value
+        # return self._value / self._count
 
     @value.setter
     def value(self, val):
-        self._value += val
-        self._count += 1
+        # self._value += val
+        # self._count += 1
+        self._value = val
 
 
 class StatsLogger(object):
@@ -56,6 +59,17 @@ class StatsLogger(object):
                 print(msg + "\b"*len(msg), end="", flush=True, file=f)
             else:
                 print(msg, flush=True, file=f)
+
+    def wandb_log(self, epoch, batch, loss, iter, losses=None, precision="{:.5f}", prefix=''):
+        self._loss.value = loss
+        fmt = "epoch: {} - batch: {} - loss: " + precision
+        msg = fmt.format(epoch, batch, self._loss.value)
+        if losses is None:
+            losses = self._values
+        if prefix != '':
+            losses = {'{}/{}'.format(prefix, n): (k.value if isinstance(k, AverageAggregator) else k) for n, k in losses.items()}
+        if losses is not None:
+            wandb.log({**losses, "epoch": epoch}, step=iter)
 
     @classmethod
     def instance(cls):

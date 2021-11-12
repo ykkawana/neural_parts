@@ -270,14 +270,16 @@ def train_on_batch(network, optimizer, loss_fn, metrics_fn, X, targets,
     return batch_loss.item()
 
 
-def validate_on_batch(network, loss_fn, metrics_fn, X, targets, config):
+def validate_on_batch(network, loss_fn, metrics_fn, X, targets, config, no_loss=False):
     # Extract the per primitive features
     F = network.compute_features(X)
     predictions = compute_predictions_from_features(
         F, network, targets, config
     )
     # Do the forward pass to predict the primitive_parameters
+    if no_loss:
+        return {"predictions": predictions}
     batch_loss = loss_fn(predictions, targets, config["loss"])
     metrics_fn(predictions, targets)
 
-    return batch_loss.item()
+    return {"loss": batch_loss.item(), "predictions": predictions}

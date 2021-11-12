@@ -6,6 +6,22 @@ from .chamfer_loss_functions import chamfer_loss, \
 from .occupancy_loss_functions import implicit_surface_loss, \
     conservative_implicit_surface_loss, min_points_loss
 
+def get_loss_eval(loss_types, config):
+    losses = {
+        "implicit_surface_loss": implicit_surface_loss,
+        "chamfer_loss": chamfer_loss,
+        "conservative_implicit_surface_loss": conservative_implicit_surface_loss,
+        "true_chamfer_loss": true_chamfer_loss,
+        # "normal_consistency_loss": normal_consistency_loss,
+        "min_points_loss": min_points_loss,
+        "size_regularizer": size_regularizer,
+        "non_overlapping_regularizer": non_overlapping_regularizer,
+    }
+
+    return weighted_sum_of_losses(
+        *[losses[t] for t in loss_types],
+        weights=config["weights"]
+    )
 
 def get_loss(loss_types, config):
     losses = {
